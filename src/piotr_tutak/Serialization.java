@@ -11,10 +11,13 @@ import java.io.Serializable;
 class Student implements Serializable {
 	//TODO: Dodaæ UID
 	int id;  
-	String name;  
+	String name;
+	// S³ówko kluczowe "transient" sprawia, ¿e dane pole nie jest serializowane.
+	// transient int age;
 	public Student(int id, String name) {  
 		this.id = id;  
-		this.name = name;  
+		this.name = name;
+		//this.age=age;
 	}  
 }  
 
