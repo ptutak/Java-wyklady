@@ -1,4 +1,4 @@
-package serverSocketChannel;
+package madrimas.serverSocketChannel;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
