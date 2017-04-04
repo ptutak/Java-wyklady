@@ -1,4 +1,4 @@
-package datagramChannel;
+package madrimas.datagramChannel;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
