@@ -52,19 +52,31 @@ public class mainClass {
                System.out.println("Plik readme.md istnieje");
             else System.out.println("Plik readme nie istnieje");
 
-           //stwórzmy folder na ważne rzeczy
-            Path pathToWazneRzeczyFolder = Paths.get("./wazneRzeczy");
 
+            Path pathToWazneRzeczyFolder = Paths.get(".\\src\\kamil_stachowicz\\wazneRzeczy");
+
+            //tworzenie nowego folderu
             Path newDir = Files.createDirectory(pathToWazneRzeczyFolder);
 
             //skopiujmy wazne rzeczy bo są ważne
             //skorzystamy z ścieżki do naszego pliku i wyznaczymy mu nową nazwę
-            Path destinationPath = Paths.get("./wazneRzeczyKopia");
+            Path destinationPath = Paths.get(".\\src\\kamil_stachowicz\\wazneRzeczyKopia");
             Files.copy(newDir, destinationPath);
 
-            //no ale coś się zmieniło w ważnych rzeczach a w kopii już nie, tak więc trzeba folder zastąpić
-            Files.copy(newDir, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            Path pathToList = Paths.get(".\\src\\kamil_stachowicz\\Lista.txt");
 
+            Path pathToWazneRzeczyLista = Paths.get(".\\src\\kamil_stachowicz\\wazneRzeczy\\Lista.txt");
+
+            //kopiujemy liste do waznych rzeczy
+            //opcja kopiowania pozwala na zastępowanie obecnych plików
+            Files.copy(pathToList, pathToWazneRzeczyLista, StandardCopyOption.REPLACE_EXISTING);
+
+            //Przeniesmy jeszcze listę do kopii zapasowej
+            Path destinationForListPath = Paths.get(".\\src\\kamil_stachowicz\\wazneRzeczyKopia\\Lista.txt");
+            Files.move(pathToWazneRzeczyLista, destinationForListPath, StandardCopyOption.REPLACE_EXISTING);
+
+            //mimo wszystko kopia listy nam jest zbędna, uwsuwamy ją
+            Files.delete(destinationForListPath);
 
             //Pipe
 
