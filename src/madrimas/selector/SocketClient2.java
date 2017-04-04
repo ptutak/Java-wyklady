@@ -1,4 +1,4 @@
-package selector;
+package madrimas.selector;
 
 import java.nio.channels.SocketChannel;
 import java.nio.ByteBuffer;
