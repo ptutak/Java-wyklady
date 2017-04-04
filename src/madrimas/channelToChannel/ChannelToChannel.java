@@ -1,4 +1,4 @@
-package channelToChannel;
+package madrimas.channelToChannel;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
