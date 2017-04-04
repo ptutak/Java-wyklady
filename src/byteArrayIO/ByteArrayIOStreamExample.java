@@ -15,12 +15,12 @@ public class ByteArrayIOStreamExample {
     
     
     public static void main(String[] args) throws IOException{
-    
-        
         
         byte[] bytes = new byte[10];
         for(int i = 0; i<10;i++)
             bytes[i] = (byte) i;
+        
+        
         ByteArrayInputStream input = new ByteArrayInputStream(bytes);
 
         int data = input.read();
