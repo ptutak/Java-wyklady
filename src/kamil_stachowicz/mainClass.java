@@ -2,6 +2,7 @@ package kamil_stachowicz;
 
 import com.sun.xml.internal.bind.v2.TODO;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -11,6 +12,7 @@ import java.nio.channels.Pipe;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.UnresolvedAddressException;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Created by staho on 30.03.2017.
@@ -78,6 +80,25 @@ public class mainClass {
             //mimo wszystko kopia listy nam jest zbędna, uwsuwamy ją
             Files.delete(destinationForListPath);
 
+
+            //szukamy drugiego pliku listy
+            Path rootPath = Paths.get(".\\src\\kamil_stachowicz\\folder1");
+            String fileToFind = File.separator + "Lista.txt";
+
+            //wyszukujemy plik listy
+                Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        String fileString = file.toAbsolutePath().toString();
+                        //System.out.println("pathString = " + fileString);
+
+                        if(fileString.endsWith(fileToFind)){
+                            System.out.println("Plik znaleziono w: " + file.toAbsolutePath());
+                            return FileVisitResult.TERMINATE;
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
             //Pipe
 
             Pipe pipe = Pipe.open();
@@ -109,19 +130,18 @@ public class mainClass {
             ByteBuffer buffer2 = ByteBuffer.allocate(48);
 
              while (sourceChannel.read(buffer2) > 0) {
-                    //odczyt danych z pipe do buferu
-                    buffer2.flip();
-                    // do buferu zostały wpisane dane, należy je teraz z niego pobrać, tak więc znowu zmieniamy jego tryb
+                 //odczyt danych z pipe do buferu
+                 buffer2.flip();
+                 // do buferu zostały wpisane dane, należy je teraz z niego pobrać, tak więc znowu zmieniamy jego tryb
 
-                    while (buffer2.hasRemaining()) {
-                        char ch = (char) buffer2.get();
-                        System.out.print(ch);
-                    }
-                    System.out.println("");
-                    //wypisywanie danych na ekran
+                 while (buffer2.hasRemaining()) {
+                     char ch = (char) buffer2.get();
+                     System.out.print(ch);
+                 }
+                 System.out.println("");
+                 //wypisywanie danych na ekran
 
-                    buffer2.clear();
-                }
+             }
         }
         catch(IOException e){
             e.printStackTrace();
