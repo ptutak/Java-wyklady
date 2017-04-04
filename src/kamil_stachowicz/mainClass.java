@@ -2,6 +2,7 @@ package kamil_stachowicz;
 
 import com.sun.xml.internal.bind.v2.TODO;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -9,8 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Pipe;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.UnresolvedAddressException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 
 /**
  * Created by staho on 30.03.2017.
@@ -18,77 +18,85 @@ import java.nio.file.Paths;
 public class mainClass {
     public static void main(String[] args) {
         try {
-            /*//Socket channel is a channel that connects to TCP network socket.
+            //Path
+                String pathToChromeXML = "C:\\Program Files\\..\\Program Files (x86)\\.\\Google\\Chrome\\Application\\SetupMetrics\\..\\chrome.VisualElementsManifest.xml";
+                Path path = Paths.get(pathToChromeXML);
 
-            SocketAddress address = new InetSocketAddress("localhost",5454);
-            *//* tworzymy klasę z adresem socketu,
-             * niezbędny do tego jest poprawny adres Inet
-             * oraz port na którym program ma nasłuchiwać
-             *//*
-            // TODO: 31.03.2017   Poprawić opisy
+                System.out.println("Path1: " + path);
 
-            SocketChannel socketChannel = SocketChannel.open();
-
-                *//* Są dwa sposoby na otwarcie SocketChannel
-                 * pierwszym jest podłączenie się do strony internetowej
-                 * drugim jest podłączenie się do połączenia z ServerSocketChannel
-                 *//*
+                Path path1 = path.normalize();
+                System.out.println("Path1(normalized): " + path1);
 
 
-            socketChannel.connect(address);
-                *//*
-                 * W tym momencie podłączamy się do serwera na laptopie który się kryje pod adresem
-                 *
-                 * Następną rzeczą jest zapisanie danych do bufera
-                 *//*
-            ByteBuffer buffer = ByteBuffer.allocate(255);
-                // alokacja bufera na dane bitowe
+                Path windows = Paths.get("C:\\Windows", "System32");
+                System.out.println("Path to system32: " + windows);
 
-            int bytesRead = socketChannel.read(buffer);
-                // funkcja read wczytuje do bufera
 
-            String result = new String(buffer.array()).trim();
+                Path currentDir = Paths.get(".");
+                System.out.println("Current directory: " + currentDir.toAbsolutePath());
 
-                //Dane z buffera wrzucane są do stringa
 
-            System.out.println("Wczytano " + bytesRead + " bajtow");
-            System.out.println(result);
+                Path parentDirectory = Paths.get("..");
+                System.out.println("Parent directory from current is: " + parentDirectory.toAbsolutePath());
 
-            socketChannel.close();
-            //zamknięcie kanału
-*/
-            {
-                //Pipe
 
-                Pipe pipe = Pipe.open();
-                //stworzenie pipe
+            //Files
+            System.out.println("Czy istnieje plik \"README.md\" w folderze projektu?");
+            Path pathToReadme = Paths.get(".\\README.md");
 
-                Pipe.SinkChannel sinkChannel = pipe.sink();
-                //sink channel jest to kanał który będzie przyjmował dane
 
-                String message = "Dzien dobry";
+            boolean pathToReadmeExist = Files.exists(pathToReadme, new LinkOption[]{LinkOption.NOFOLLOW_LINKS});
+            //ta opcja oznacza że files.exists nie powinno rozpatrywać "symbolic links" żeby określić ścieżkę
 
-                ByteBuffer buffer1 = ByteBuffer.allocate(48);
-                // alokacja bufferu na dane bitowe
+            if(pathToReadmeExist)
+               System.out.println("Plik readme.md istnieje");
+            else System.out.println("Plik readme nie istnieje");
 
-                buffer1.clear();
-                buffer1.put(message.getBytes());
-                //do buferu przepisuję dane ze string w formie bitowej
+           //stwórzmy folder na ważne rzeczy
+            Path pathToWazneRzeczyFolder = Paths.get("./wazneRzeczy");
 
-                buffer1.flip();
-                //flip służy do zmiany bufferu z zapisu do odczytu (i na odwrót)
+            Path newDir = Files.createDirectory(pathToWazneRzeczyFolder);
 
-                while (buffer1.hasRemaining()) sinkChannel.write(buffer1);
-                //wrzucanie danych z bufferu do sinkChannelu pipe
+            //skopiujmy wazne rzeczy bo są ważne
+            //skorzystamy z ścieżki do naszego pliku i wyznaczymy mu nową nazwę
+            Path destinationPath = Paths.get("./wazneRzeczyKopia");
+            Files.copy(newDir, destinationPath);
 
-                Pipe.SourceChannel sourceChannel = pipe.source();
+            //no ale coś się zmieniło w ważnych rzeczach a w kopii już nie, tak więc trzeba folder zastąpić
+            Files.copy(newDir, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+
+            //Pipe
+
+            Pipe pipe = Pipe.open();
+            //stworzenie pipe
+
+            Pipe.SinkChannel sinkChannel = pipe.sink();
+            //sink channel jest to kanał który będzie przyjmował dane
+
+            String message = "Dzien dobry";
+
+            ByteBuffer buffer1 = ByteBuffer.allocate(48);
+            // alokacja bufferu na dane bitowe
+
+            buffer1.clear();
+            buffer1.put(message.getBytes());
+            //do buferu przepisuję dane ze string w formie bitowej
+
+            buffer1.flip();
+            //flip służy do zmiany bufferu z zapisu do odczytu (i na odwrót)
+
+            while (buffer1.hasRemaining()) sinkChannel.write(buffer1);
+            //wrzucanie danych z bufferu do sinkChannelu pipe
+
+            Pipe.SourceChannel sourceChannel = pipe.source();
             /*
              * source channel jest przeciwieństwem sinkChannelu
              * służy do pobierania danych z pipe
              */
-                ByteBuffer buffer2 = ByteBuffer.allocate(48);
+            ByteBuffer buffer2 = ByteBuffer.allocate(48);
 
-                while (sourceChannel.read(buffer2) > 0) {
+             while (sourceChannel.read(buffer2) > 0) {
                     //odczyt danych z pipe do buferu
                     buffer2.flip();
                     // do buferu zostały wpisane dane, należy je teraz z niego pobrać, tak więc znowu zmieniamy jego tryb
@@ -102,14 +110,9 @@ public class mainClass {
 
                     buffer2.clear();
                 }
-            }
-
-            //Path
-            {
-                Path path = Paths.get("/Users/staho/Documents/Project/JavaFX-wyklady/README.md");
-                
-            }
-
+        }
+        catch(IOException e){
+            e.printStackTrace();
         }
         catch (UnresolvedAddressException x){
             x.printStackTrace();
@@ -117,6 +120,7 @@ public class mainClass {
         catch(Exception e){
             e.printStackTrace();
         }
+
 
     }
 }
