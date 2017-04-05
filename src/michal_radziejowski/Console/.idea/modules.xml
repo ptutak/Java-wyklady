@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/InputOutputStream.iml" filepath="$PROJECT_DIR$/InputOutputStream.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Console.iml" filepath="$PROJECT_DIR$/Console.iml" />
     </modules>
   </component>
 </project>
